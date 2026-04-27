@@ -1,44 +1,44 @@
 ---
-tags: [knowledge]
-created: YYYY-MM-DD
-topic: <topic>
+tags: [знания]
+создан: ГГГГ-ММ-ДД
+тема: <тема>
 ---
 
-# <Topic Name>
+# <Название темы>
 
-> One-line summary of what this knowledge entry covers.
-
----
-
-## Key Facts
-
-- fact 1
-- fact 2
-- fact 3
+> Одной строкой — что охватывает эта запись знаний.
 
 ---
 
-## How I Learned This
+## Ключевые факты
 
-*(Context: which project, what problem, when)*
-
-**YYYY-MM-DD:** *(source and context)*
-
----
-
-## Gotchas & Non-obvious Details
-
-*(Things that surprised us or caused bugs)*
+- факт 1
+- факт 2
+- факт 3
 
 ---
 
-## Useful References
+## Как я это узнал
 
-- 
+*(Контекст: какой проект, какая проблема, когда)*
+
+**ГГГГ-ММ-ДД:** *(источник и контекст)*
 
 ---
 
-## Related Memory
+## Подводные камни и неочевидные детали
 
-- [[../projects/<project>]]
-- [[<other-knowledge>]]
+*(Что нас удивило или привело к ошибкам)*
+
+---
+
+## Полезные ссылки
+
+-
+
+---
+
+## Связанная память
+
+- [[../projects/<проект>]]
+- [[<другие-знания>]]

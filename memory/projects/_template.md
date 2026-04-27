@@ -1,57 +1,57 @@
 ---
-tags: [project, active]
-created: YYYY-MM-DD
-status: active
+tags: [проект, активное]
+создан: ГГГГ-ММ-ДД
+статус: активный
 ---
 
-# Project: <Project Name>
+# Проект: <Название проекта>
 
-> One-line description of what this project is.
-
----
-
-## Goal
-
-What is the desired end state?
+> Одной строкой — что это за проект.
 
 ---
 
-## Tech Stack / Context
+## Цель
 
-- Language / framework: 
-- Repo / location: 
-- Related files: 
+Какое желаемое конечное состояние?
 
 ---
 
-## Progress Log
+## Технический стек / Контекст
 
-*(Most recent first)*
-
-**YYYY-MM-DD:** *(What happened this session)*
-
----
-
-## Key Decisions
-
-*(Log major architectural or product decisions here so they don't get re-debated)*
+- Язык / фреймворк:
+- Репозиторий / расположение:
+- Связанные файлы:
 
 ---
 
-## Open Tasks
+## Журнал прогресса
 
-- [ ] task 1
-- [ ] task 2
+*(Самое новое сверху)*
 
----
-
-## Completed Milestones
-
-- ✅ YYYY-MM-DD: *(milestone)*
+**ГГГГ-ММ-ДД:** *(что произошло в эту сессию)*
 
 ---
 
-## Related Memory
+## Ключевые решения
 
-- [[../core/ongoing_context]]
-- [[../knowledge/<relevant-topic>]]
+*(Журнал важных архитектурных или продуктовых решений — чтобы не переспоривать их снова)*
+
+---
+
+## Открытые задачи
+
+- [ ] задача 1
+- [ ] задача 2
+
+---
+
+## Завершённые вехи
+
+- ✅ ГГГГ-ММ-ДД: *(веха)*
+
+---
+
+## Связанная память
+
+- [[../core/ongoing_context|Текущий контекст]]
+- [[../knowledge/<тема>]]

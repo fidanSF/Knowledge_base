@@ -1,57 +1,57 @@
 ---
-tags: [core, preferences]
+tags: [основное, предпочтения]
 ---
 
-# Working Style
+# Стиль работы
 
-*How the user likes to work with Claude. Update as preferences are expressed.*
-
----
-
-## Communication
-
-- **Language for responses:** Russian
-- **Response length:** *(not yet specified — adjust based on feedback)*
-- **Tone:** *(not yet specified)*
-- **Code comments:** minimal (per CLAUDE.md defaults)
+*Как пользователь любит работать с Claude. Обновлять по мере выражения предпочтений.*
 
 ---
 
-## Code & Technical Work
+## Общение
 
-- **Preferred languages:** *(not yet known)*
-- **Frameworks / tools:** *(not yet known)*
-- **Testing expectations:** *(not yet known)*
-- **Review style:** *(not yet known)*
-
----
-
-## Workflow Preferences
-
-- **Confirmation before risky actions:** yes (default)
-- **Parallel vs sequential:** *(not yet known)*
-- **Verbosity of progress updates:** *(not yet known)*
+- **Язык ответов:** Русский
+- **Длина ответов:** *(пока не указана — подстраиваться по обратной связи)*
+- **Тон:** *(пока не указан)*
+- **Комментарии в коде:** минимальные
 
 ---
 
-## Feedback History
+## Код и техническая работа
 
-*(Log moments when user corrected or redirected Claude — helps future calibration)*
-
-*(No entries yet)*
-
----
-
-## Known Pet Peeves
-
-*(Things that annoyed the user)*
-
-*(None logged yet)*
+- **Предпочтительные языки:** *(пока неизвестно)*
+- **Фреймворки / инструменты:** *(пока неизвестно)*
+- **Ожидания по тестированию:** *(пока неизвестно)*
+- **Стиль ревью:** *(пока неизвестно)*
 
 ---
 
-## What Claude Does Well (per user)
+## Предпочтения рабочего процесса
 
-*(Compliments or positive feedback — useful for understanding what to repeat)*
+- **Подтверждение перед рискованными действиями:** да (по умолчанию)
+- **Параллельно vs последовательно:** *(пока неизвестно)*
+- **Детальность обновлений о прогрессе:** *(пока неизвестно)*
 
-*(None logged yet)*
+---
+
+## История обратной связи
+
+*(Моменты когда пользователь поправлял или перенаправлял Claude — помогает будущей калибровке)*
+
+*(Записей пока нет)*
+
+---
+
+## Известные раздражители
+
+*(Что раздражало пользователя)*
+
+*(Ничего не зафиксировано)*
+
+---
+
+## Что Claude делает хорошо (по мнению пользователя)
+
+*(Похвала или положительная обратная связь — полезно чтобы понять что повторять)*
+
+*(Ничего не зафиксировано)*

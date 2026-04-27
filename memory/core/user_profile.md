@@ -1,52 +1,53 @@
 ---
-tags: [core, profile]
+tags: [основное, профиль]
 ---
 
-# User Profile
+# Профиль пользователя
 
-*Claude reads this file at the start of every session.*  
-*Append new facts with a date stamp — never delete old entries.*
-
----
-
-## Identity
-
-- **Name:** *(not yet provided)*
-- **Location / Timezone:** *(not yet provided)*
-- **Language:** Russian (primary), English (technical)
-- **Occupation:** *(not yet provided)*
+*Claude читает этот файл в начале каждой сессии.*
+*Добавлять новые факты с датой — никогда не удалять старые записи.*
 
 ---
 
-## Technical Background
+## Личность
 
-*(Fill in as Claude learns)*
-
----
-
-## Goals & Motivations
-
-*(Fill in as Claude learns)*
+- **Имя:** *(пока не указано)*
+- **Местоположение / Часовой пояс:** *(пока не указано)*
+- **Язык:** Русский (основной), Английский (технический)
+- **Род деятельности:** *(пока не указано)*
 
 ---
 
-## Important Facts
+## Технический бэкграунд
 
-*(Add dated entries below as they emerge)*
-
-**2026-04-27:** Repository created. User wants Claude's memory stored on GitHub, compatible with Obsidian, accessible from any device. Method: Andrej Karpathy's external memory approach.
+*(Заполняется по мере того, как Claude узнаёт)*
 
 ---
 
-## Relationships & Context
+## Цели и мотивация
 
-*(People, teams, organizations relevant to work)*
+*(Заполняется по мере того, как Claude узнаёт)*
 
 ---
 
-## Do Not Forget
+## Важные факты
 
-*(Critical facts that must survive memory compression)*
+*(Добавлять датированные записи по мере их появления)*
 
-- User accesses Claude from multiple devices — always push memory to GitHub after sessions
-- Memory system: GitHub as source of truth, Obsidian as reader/editor, CLAUDE.md as session hook
+**27.04.2026:** Создан репозиторий. Пользователь хочет хранить память Claude на GitHub, совместимую с Obsidian, доступную с любого устройства. Метод: внешняя память по Андрею Карпатому. Пользователь русскоязычный — вся память и интерфейс на русском языке.
+
+---
+
+## Связи и контекст
+
+*(Люди, команды, организации, связанные с работой)*
+
+---
+
+## Не забывать
+
+*(Критически важные факты, которые должны пережить сжатие памяти)*
+
+- Пользователь работает с Claude с нескольких устройств — всегда пушить память на GitHub после сессий
+- Система памяти: GitHub как источник истины, Obsidian как интерфейс чтения/редактирования, CLAUDE.md как хук начала сессии
+- Все ответы и файлы памяти писать на **русском языке**

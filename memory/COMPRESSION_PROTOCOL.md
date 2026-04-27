@@ -1,80 +1,80 @@
 ---
-tags: [meta, protocol]
+tags: [мета, протокол]
 ---
 
-# Memory Compression Protocol
+# Протокол сжатия памяти
 
-Run this monthly (or when `memory/log/` has 10+ sessions).
-
----
-
-## Why Compress?
-
-Raw session logs grow unboundedly. Compression extracts durable facts into core files,  
-then archives the raw log. Result: core memory stays small and fast to read; nothing is lost.
+Выполнять ежемесячно (или когда в `memory/log/` накопилось 10+ сессий).
 
 ---
 
-## Step 1 — Identify What to Compress
+## Зачем сжимать?
 
-Read all entries in `memory/log/YYYY-MM.md` for the target month.  
-Group entries by theme:
-
-- Repeated user preferences → `core/working_style.md`
-- Biographical facts → `core/user_profile.md`  
-- Project milestones → `memory/projects/<project>.md`
-- Domain knowledge → `memory/knowledge/<topic>.md`
-- One-off decisions → keep in log (do not compress)
+Сырые логи сессий растут неограниченно. Сжатие извлекает устойчивые факты в основные файлы,
+затем архивирует сырой лог. Результат: основная память остаётся маленькой и быстро читаемой; ничего не теряется.
 
 ---
 
-## Step 2 — Write Distilled Facts
+## Шаг 1 — Определить что сжимать
 
-For each group, add a bullet to the relevant core file:
+Прочитать все записи в `memory/log/ГГГГ-ММ.md` за целевой месяц.
+Сгруппировать записи по теме:
+
+- Повторяющиеся предпочтения пользователя → `core/working_style.md`
+- Биографические факты → `core/user_profile.md`
+- Вехи проектов → `memory/projects/<проект>.md`
+- Предметные знания → `memory/knowledge/<тема>.md`
+- Разовые решения → оставить в логе (не сжимать)
+
+---
+
+## Шаг 2 — Записать дистиллированные факты
+
+Для каждой группы добавить пункт в соответствующий основной файл:
 
 ```markdown
-**YYYY-MM (compressed):** <distilled fact, max 1-2 sentences>
+**ГГГГ-ММ (сжато):** <дистиллированный факт, максимум 1-2 предложения>
 ```
 
-Use the label `(compressed)` instead of a specific date to indicate this is a summary.
+Использовать пометку `(сжато)` вместо конкретной даты — это означает, что запись является обобщением.
 
 ---
 
-## Step 3 — Archive the Raw Log
+## Шаг 3 — Архивировать сырой лог
 
 ```bash
-mv memory/log/YYYY-MM.md memory/archive/YYYY-MM.md
+mv memory/log/ГГГГ-ММ.md memory/archive/ГГГГ-ММ.md
 ```
 
-Update `memory/00_INDEX.md`: move the entry from "Session Logs" to "Archive".
+Обновить `memory/00_INDEX.md`: переместить запись из «Логи сессий» в «Архив».
 
 ---
 
-## Step 4 — Commit
+## Шаг 4 — Сделать коммит
 
 ```bash
 git add -A
-git commit -m "memory: compress YYYY-MM logs"
+git commit -m "память: сжатие логов ГГГГ-ММ"
 git push -u origin main
 ```
 
 ---
 
-## Compression Rules
+## Правила сжатия
 
-1. **Never delete without extracting** — if a log entry has no home in core files, it stays in the archive, not in the trash
-2. **Preserve dates** — always note the original date range of compressed entries
-3. **Compress facts, not events** — "user prefers concise answers" is a fact; "we debugged auth for 2 hours" is an event (keep in archive)
-4. **Keep "Do Not Forget" section untouched** — never compress `user_profile.md#do-not-forget`
+1. **Никогда не удалять без извлечения** — если у записи лога нет места в основных файлах, она остаётся в архиве, а не удаляется
+2. **Сохранять даты** — всегда указывать исходный диапазон дат сжатых записей
+3. **Сжимать факты, не события** — «пользователь предпочитает краткие ответы» — это факт; «мы 2 часа отлаживали авторизацию» — событие (оставить в архиве)
+4. **Раздел «Не забывать» не трогать** — никогда не сжимать `user_profile.md#не-забывать`
 
 ---
 
-## Emergency Memory Recovery
+## Восстановление памяти в экстренном случае
 
-If memory is lost or corrupted:
+Если память потеряна или повреждена:
 
 ```bash
-git log --all --oneline memory/    # see all historical commits
-git show <commit>:memory/core/user_profile.md  # read old version
-git checkout <commit> -- memory/   # restore entire memory folder
+git log --all --oneline memory/    # вся история коммитов
+git show <коммит>:memory/core/user_profile.md  # прочитать старую версию
+git checkout <коммит> -- memory/   # восстановить всю папку памяти
 ```

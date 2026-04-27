@@ -1,51 +1,54 @@
 ---
-tags: [core, context, active]
+tags: [основное, контекст, активное]
 ---
 
-# Ongoing Context
+# Текущий контекст
 
-*Current projects, open threads, and recent important decisions.*  
-*This is the most frequently updated core file — check every session.*
-
----
-
-## Active Projects
-
-| Project | Status | Next Action | File |
-|---------|--------|-------------|------|
-| Memory management system (this repo) | ✅ setup complete | User fills in profile | [[../projects/_template]] |
+*Текущие проекты, открытые вопросы и важные недавние решения.*
+*Это самый часто обновляемый основной файл — проверять каждую сессию.*
 
 ---
 
-## Open Threads
+## Активные проекты
 
-*Questions, decisions, or tasks started but not finished.*
-
-- [ ] User profile fields need to be filled in (`memory/core/user_profile.md`)
-- [ ] First real project needs to be created using the template
-
----
-
-## Recent Decisions
-
-*(Log major decisions so Claude doesn't re-litigate them)*
-
-**2026-04-27:** Chose GitHub as memory backend (not Notion, not local-only). Reason: cross-device access without proprietary lock-in.
-
-**2026-04-27:** Chose Obsidian as the reading/editing interface. Reason: markdown-native, graph view, mobile app, no subscription required.
+| Проект | Статус | Следующий шаг | Файл |
+|--------|--------|---------------|------|
+| Система управления памятью (этот репозиторий) | ✅ настройка завершена | Пользователь заполняет профиль | — |
 
 ---
 
-## Waiting For
+## Открытые вопросы
 
-*(Things blocked on user input or external events)*
+*Вопросы, решения или задачи начатые, но не завершённые.*
 
-- User to provide their name, occupation, and technical background in `user_profile.md`
+- [ ] Заполнить поля профиля пользователя (`memory/core/user_profile.md`)
+- [ ] Создать первый реальный проект по шаблону
 
 ---
 
-## Recently Completed
+## Недавние решения
 
-*(Archive of finished threads — keep last 5)*
+*(Журнал важных решений, чтобы Claude не пересматривал их снова)*
 
-- ✅ 2026-04-27: Created initial memory repository structure
+**27.04.2026:** Выбран GitHub как бэкенд памяти (не Notion, не только локально). Причина: кросс-девайсный доступ без привязки к проприетарным платформам.
+
+**27.04.2026:** Выбран Obsidian как интерфейс чтения/редактирования. Причина: нативный markdown, граф связей, мобильное приложение, не требует подписки.
+
+**27.04.2026:** Все файлы памяти и ответы Claude — на русском языке.
+
+---
+
+## Ожидает
+
+*(Задачи заблокированные на ввод пользователя или внешние события)*
+
+- Пользователь заполнит имя, род деятельности и технический бэкграунд в `user_profile.md`
+
+---
+
+## Недавно завершено
+
+*(Архив завершённых вопросов — хранить последние 5)*
+
+- ✅ 27.04.2026: Создана начальная структура репозитория памяти
+- ✅ 27.04.2026: Все файлы переведены на русский язык

@@ -1,62 +1,62 @@
 ---
-tags: [index, meta]
+tags: [индекс, мета]
 ---
 
-# Memory Index
+# Индекс памяти
 
-Master map of all memory files. Keep this up to date whenever a new file is added.
-
----
-
-## Core Memory
-
-| File | Content | Last Updated |
-|------|---------|--------------|
-| [[core/user_profile]] | Facts about the user, background, identity | — |
-| [[core/working_style]] | How user likes to work with Claude | — |
-| [[core/ongoing_context]] | Current projects, open threads, recent decisions | — |
+Главная карта всех файлов памяти. Обновлять при добавлении каждого нового файла.
 
 ---
 
-## Projects
+## Основная память
 
-| File | Status | Last Updated |
-|------|--------|--------------|
-| *(no projects yet — copy `_template.md` to start one)* | — | — |
-
----
-
-## Knowledge Base
-
-| File | Topic | Last Updated |
-|------|-------|--------------|
-| *(no entries yet)* | — | — |
+| Файл | Содержимое | Последнее обновление |
+|------|-----------|---------------------|
+| [[core/user_profile\|Профиль пользователя]] | Факты о пользователе, биография, личность | — |
+| [[core/working_style\|Стиль работы]] | Как пользователь любит работать с Claude | — |
+| [[core/ongoing_context\|Текущий контекст]] | Текущие проекты, открытые вопросы, недавние решения | — |
 
 ---
 
-## Session Logs
+## Проекты
 
-| File | Period | Key Events |
-|------|--------|------------|
-| *(no logs yet)* | — | — |
-
----
-
-## Quick Stats
-
-- **Total memory entries:** 0
-- **Active projects:** 0
-- **Knowledge topics:** 0
-- **Sessions logged:** 0
+| Файл | Статус | Последнее обновление |
+|------|--------|---------------------|
+| *(проектов пока нет — скопируй `_template.md` чтобы начать)* | — | — |
 
 ---
 
-## Memory Graph (Obsidian)
+## База знаний
 
-Open the Graph View (`Ctrl/Cmd + G`) to see how all memory nodes connect.
+| Файл | Тема | Последнее обновление |
+|------|------|---------------------|
+| *(записей пока нет)* | — | — |
 
-Color coding:
-- 🔵 Blue — Core memory (`memory/core/`)
-- 🟢 Green — Projects (`memory/projects/`)
-- 🟠 Orange — Knowledge (`memory/knowledge/`)
-- 🟣 Purple — Logs (`memory/log/`)
+---
+
+## Логи сессий
+
+| Файл | Период | Ключевые события |
+|------|--------|-----------------|
+| [[log/2026-04\|Апрель 2026]] | 2026-04 | Создание системы памяти |
+
+---
+
+## Быстрая статистика
+
+- **Всего записей памяти:** 0
+- **Активных проектов:** 0
+- **Тем в базе знаний:** 0
+- **Залогировано сессий:** 1
+
+---
+
+## Граф памяти (Obsidian)
+
+Открыть вид графа (`Ctrl/Cmd + G`) чтобы увидеть связи между всеми узлами памяти.
+
+Цветовое кодирование:
+- 🔵 Синий — Основная память (`memory/core/`)
+- 🟢 Зелёный — Проекты (`memory/projects/`)
+- 🟠 Оранжевый — Знания (`memory/knowledge/`)
+- 🟣 Фиолетовый — Логи (`memory/log/`)

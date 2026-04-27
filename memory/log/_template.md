@@ -1,29 +1,28 @@
 ---
-tags: [log]
-month: YYYY-MM
+tags: [лог]
+месяц: ГГГГ-ММ
 ---
 
-# Session Log — YYYY-MM
+# Лог сессий — ГГГГ-ММ
 
-*One entry per Claude session. Most recent at top.*
+*Одна запись на каждую сессию Claude. Самые новые сверху.*
 
 ---
 
-## YYYY-MM-DD — Session Title
+## ГГГГ-ММ-ДД — Название сессии
 
-**Duration:** ~N minutes  
-**Topic:** brief description  
+**Тема:** краткое описание
 
-### What happened
+### Что произошло
 
-- 
-- 
+-
+-
 
-### Decisions made
+### Принятые решения
 
-- 
+-
 
-### Memory updated
+### Обновлена память
 
 - [ ] user_profile.md
 - [ ] working_style.md
@@ -33,4 +32,4 @@ month: YYYY-MM
 
 ---
 
-*(copy block above for each new session)*
+*(скопировать блок выше для каждой новой сессии)*

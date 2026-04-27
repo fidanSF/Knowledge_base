@@ -1,148 +1,134 @@
-# Claude Memory — Knowledge Base
+# Память Claude — База знаний
 
-Persistent memory for Claude AI, based on Andrej Karpathy's external memory method.  
-Stored on GitHub → accessible from any device. Compatible with Obsidian for visual navigation.
+Постоянная память для Claude AI, основанная на методе внешней памяти Андрея Карпатого.
+Хранится на GitHub → доступна с любого устройства. Совместима с Obsidian для визуальной навигации.
 
 ---
 
-## How It Works
+## Как это работает
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                     GITHUB (cloud)                       │
-│                  fidanSF/knowledge_base                  │
-│                                                          │
-│  memory/core/          ← permanent facts & preferences   │
-│  memory/projects/      ← per-project state               │
-│  memory/knowledge/     ← domain knowledge Claude learns  │
-│  memory/log/           ← session-by-session diary        │
-│  memory/archive/       ← compressed old logs             │
-└─────────────────────────────────────────────────────────┘
-         ↑ git pull                    git push ↓
-┌─────────────────────────────────────────────────────────┐
-│                  CLAUDE CODE SESSION                     │
-│  reads CLAUDE.md → loads memory → works → writes back   │
-└─────────────────────────────────────────────────────────┘
-         ↑ open vault                  sync ↓
-┌─────────────────────────────────────────────────────────┐
-│                     OBSIDIAN                             │
-│  visual graph, search, backlinks, tags, mobile app       │
-└─────────────────────────────────────────────────────────┘
+GITHUB (облако) — fidanSF/Knowledge_base
+  memory/core/       ← постоянные факты и предпочтения
+  memory/projects/   ← состояние проектов
+  memory/knowledge/  ← предметные знания, усвоенные Claude
+  memory/log/        ← дневник сессий
+  memory/archive/    ← сжатые старые логи
+
+  ↑ git pull / git push ↓
+
+СЕССИЯ CLAUDE CODE
+  читает CLAUDE.md → загружает память → работает → записывает обратно
+
+  ↑ открыть vault / синхронизация ↓
+
+OBSIDIAN
+  визуальный граф, поиск, обратные ссылки, теги, мобильное приложение
 ```
 
 ---
 
-## Quick Start
+## Быстрый старт
 
-### 1. Clone the repo on any device
+### 1. Клонировать репозиторий на любом устройстве
 
 ```bash
-git clone https://github.com/fidanSF/knowledge_base.git
-cd knowledge_base
+git clone https://github.com/fidanSF/Knowledge_base.git
+cd Knowledge_base
 ```
 
-### 2. Open as Obsidian vault
+### 2. Открыть как Obsidian vault
 
-1. Open Obsidian → "Open folder as vault"
-2. Select the cloned `knowledge_base/` folder
-3. Trust the `.obsidian/` config (already set up)
+1. Открыть Obsidian → «Открыть папку как хранилище»
+2. Выбрать склонированную папку `Knowledge_base/`
+3. Разрешить загрузку конфигурации `.obsidian/` (уже настроена)
 
-### 3. Sync from any device
+### 3. Синхронизация с любого устройства
 
 ```bash
-git pull origin main        # get latest memory
-# ... use Claude ...
-git push origin main        # push Claude's updates
+git pull origin main        # получить последнюю память
+# ... работа с Claude ...
+git push origin main        # загрузить обновления памяти
 ```
 
-### 4. Mobile (Obsidian + Working Copy on iOS / MGit on Android)
+### 4. Мобильный доступ (Obsidian + Working Copy на iOS / MGit на Android)
 
-- Install **Obsidian** + **Working Copy** (iOS) or **MGit** (Android)
-- Clone this repo in Working Copy/MGit
-- Open the folder in Obsidian
-- Set up auto-sync shortcut
+- Установить **Obsidian** + **Working Copy** (iOS) или **MGit** (Android)
+- Клонировать репозиторий в Working Copy/MGit
+- Открыть папку в Obsidian
+- Настроить ярлык автосинхронизации
 
 ---
 
-## Repository Structure
+## Структура репозитория
 
 ```
-knowledge_base/
-├── CLAUDE.md                    ← Claude reads this first every session
-├── README.md                    ← this file
-│
+Knowledge_base/
+├── CLAUDE.md                    ← Claude читает это первым делом каждую сессию
+├── README.md                    ← этот файл
 ├── memory/
-│   ├── 00_INDEX.md              ← master map of all memory
-│   ├── COMPRESSION_PROTOCOL.md ← how to compress old logs
-│   │
+│   ├── 00_INDEX.md              ← главная карта всей памяти
+│   ├── COMPRESSION_PROTOCOL.md  ← как сжимать старые логи
 │   ├── core/
-│   │   ├── user_profile.md      ← facts about the user
-│   │   ├── working_style.md     ← user's preferences with Claude
-│   │   └── ongoing_context.md   ← current projects, open threads
-│   │
-│   ├── projects/
-│   │   └── _template.md         ← copy this for new projects
-│   │
-│   ├── knowledge/
-│   │   └── _template.md         ← copy this for new knowledge entries
-│   │
-│   ├── log/
-│   │   └── _template.md         ← session log format
-│   │
-│   └── archive/                 ← compressed old logs live here
-│
-└── .obsidian/                   ← Obsidian vault settings
+│   │   ├── user_profile.md      ← факты о пользователе
+│   │   ├── working_style.md     ← предпочтения пользователя в работе с Claude
+│   │   └── ongoing_context.md   ← текущие проекты, открытые вопросы
+│   ├── projects/_template.md    ← шаблон для новых проектов
+│   ├── knowledge/_template.md   ← шаблон для записей знаний
+│   ├── log/_template.md         ← шаблон лога сессий
+│   └── archive/                 ← сжатые старые логи
+└── .obsidian/                   ← настройки Obsidian vault
 ```
 
 ---
 
-## Karpathy Memory Method
+## Метод памяти Карпатого
 
-Based on Andrej Karpathy's approach to LLM memory:
+Основан на подходе Андрея Карпатого к памяти языковых моделей:
 
-1. **External storage beats in-context**: facts in files persist forever; context window is temporary
-2. **The AI owns its memory**: Claude reads AND writes to keep memory accurate
-3. **Human-readable first**: all files are plain markdown — you can read/edit directly
-4. **Compression prevents bloat**: raw logs get summarized monthly into core facts
-5. **Git is the backbone**: version history means no memory is ever truly lost
+1. **Внешнее хранилище надёжнее внутреннего**: факты в файлах хранятся вечно; контекстное окно — временно
+2. **ИИ владеет своей памятью**: Claude читает И записывает, чтобы память оставалась точной
+3. **Читаемость для человека прежде всего**: все файлы — обычный markdown, их можно читать и редактировать напрямую
+4. **Сжатие предотвращает разрастание**: сырые логи ежемесячно обобщаются в основные факты
+5. **Git — основа**: история версий означает, что никакая память не теряется навсегда
 
-Key insight: `CLAUDE.md` is automatically loaded by Claude Code at session start.  
-This is the hook that makes everything work — Claude knows to load the rest.
+Ключевой момент: `CLAUDE.md` автоматически загружается Claude Code в начале сессии.
+Это и есть механизм, который делает всё работающим — Claude знает, что нужно загрузить остальное.
 
 ---
 
-## Manual Memory Operations
+## Ручные операции с памятью
 
-### Add a fact right now
+### Добавить факт прямо сейчас
 
-Edit `memory/core/user_profile.md` and add a bullet under the relevant section.
+Отредактировать `memory/core/user_profile.md` и добавить пункт в нужный раздел.
 
-### Start a new project
+### Начать новый проект
 
 ```bash
-cp memory/projects/_template.md memory/projects/your-project-name.md
-# fill it in, then add a link in memory/00_INDEX.md
+cp memory/projects/_template.md memory/projects/название-проекта.md
+# заполнить, затем добавить ссылку в memory/00_INDEX.md
 ```
 
-### Force Claude to re-read memory
+### Заставить Claude перечитать память
 
-Say: *"Re-read your memory files and summarize what you know about me."*
+Сказать: *«Перечитай файлы памяти и расскажи, что ты знаешь обо мне.»*
 
-### Inspect what Claude knows
+### Просмотреть, что знает Claude
 
-Open `memory/00_INDEX.md` in Obsidian — it links to everything.
+Открыть `memory/00_INDEX.md` в Obsidian — там ссылки на всё.
 
 ---
 
-## Git Workflow
+## Git-процесс
 
-Claude commits memory updates automatically.  
-Commit messages follow the pattern: `memory: update YYYY-MM-DD — summary`
+Claude автоматически делает коммиты обновлений памяти.
+Сообщения коммитов: `память: обновление ГГГГ-ММ-ДД — краткое описание`
 
-To review Claude's memory changes:
+Просмотр изменений памяти Claude:
 
 ```bash
-git log --oneline              # see all updates
-git diff HEAD~1 HEAD           # see what changed last session
-git log --all --follow memory/ # history of any memory file
+git log --oneline              # все обновления
+git diff HEAD~1 HEAD           # что изменилось в прошлой сессии
+git log --all --follow memory/ # история любого файла памяти
 ```
