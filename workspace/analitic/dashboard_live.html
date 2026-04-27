@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Аналитика продаж — Вольтмаркет</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<style>
+:root {
+  --bg: #0a0b0f; --bg2: #12141a; --bg3: #1a1d26;
+  --border: rgba(255,255,255,0.07);
+  --accent: #4f8ef7; --accent2: #7c5cfc;
+  --green: #22c55e; --amber: #f59e0b; --red: #ef4444;
+  --text: #f0f2f8; --muted: #6b7280; --muted2: #9ca3af;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: 'Manrope', sans-serif; min-height: 100vh; }
+
+.header {
+  background: var(--bg2); border-bottom: 1px solid var(--border);
+  padding: 1.25rem 2rem; display: flex; align-items: center;
+  justify-content: space-between; position: sticky; top: 0; z-index: 100;
+}
+.logo { display: flex; align-items: center; gap: 12px; }
+.logo-icon {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px;
+}
+.logo-text { font-size: 16px; font-weight: 700; }
+.logo-sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
+.header-right {
+  font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted);
+  background: var(--bg3); padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border);
+}
+.update-dot {
+  display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+  background: var(--green); margin-right: 6px; animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.loader {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  height: 60vh; gap: 16px;
+}
+.spinner {
+  width: 40px; height: 40px; border: 3px solid var(--border);
+  border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loader-text { color: var(--muted); font-size: 14px; }
+
+.container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+
+.kpi-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 1.75rem; }
+.kpi-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 16px; padding: 1.25rem 1.5rem; position: relative; overflow: hidden;
+}
+.kpi-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 2px; border-radius: 16px 16px 0 0;
+}
+.kpi-card.blue::before { background: var(--accent); }
+.kpi-card.green::before { background: var(--green); }
+.kpi-card.amber::before { background: var(--amber); }
+.kpi-card.purple::before { background: var(--accent2); }
+.kpi-label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+.kpi-value { font-size: 26px; font-weight: 800; letter-spacing: -1px; line-height: 1; margin-bottom: 6px; }
+.kpi-sub { font-size: 12px; color: var(--muted2); }
+.kpi-badge {
+  display: inline-flex; align-items: center; font-size: 11px; font-weight: 700;
+  padding: 3px 9px; border-radius: 20px; margin-top: 8px;
+}
+.badge-green { background: rgba(34,197,94,0.15); color: var(--green); }
+.badge-amber { background: rgba(245,158,11,0.15); color: var(--amber); }
+.badge-red { background: rgba(239,68,68,0.15); color: var(--red); }
+
+.charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 1.75rem; }
+.chart-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; }
+.chart-card.full { grid-column: 1 / -1; }
+.chart-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.chart-sub { font-size: 12px; color: var(--muted); margin-bottom: 1.25rem; }
+
+.stores-section { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.75rem; }
+.store-row { display: grid; grid-template-columns: 1fr 130px 130px 70px 180px; align-items: center; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid var(--border); }
+.store-row:last-child { border-bottom: none; }
+.store-row.head { padding: 0 0 0.75rem; font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; }
+.store-name { font-weight: 600; font-size: 14px; }
+.mono { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--muted2); }
+.pct-big { font-weight: 700; font-size: 15px; }
+.bar-wrap { height: 6px; background: rgba(255,255,255,0.07); border-radius: 3px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 3px; }
+
+.insights-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 1.75rem; }
+.insight-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; }
+.insight-icon { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 15px; margin-bottom: 10px; }
+.insight-title { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+.insight-text { font-size: 12px; color: var(--muted2); line-height: 1.6; }
+
+.footer { text-align: center; padding: 2rem; font-size: 12px; color: var(--muted); border-top: 1px solid var(--border); }
+
+@media(max-width:768px) {
+  .kpi-row { grid-template-columns: 1fr 1fr; }
+  .charts-grid { grid-template-columns: 1fr; }
+  .chart-card.full { grid-column: 1; }
+  .insights-row { grid-template-columns: 1fr; }
+  .store-row { grid-template-columns: 1fr 60px 70px; }
+  .store-row .mono, .store-row .bar-wrap { display: none; }
+  .container { padding: 1rem; }
+  .header { padding: 1rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">
+    <div class="logo-icon">⚡</div>
+    <div>
+      <div class="logo-text">Вольтмаркет</div>
+      <div class="logo-sub">Аналитика продаж</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="update-dot"></span>
+    <span id="updateTime">Загрузка...</span>
+  </div>
+</div>
+
+<div id="loader" class="loader">
+  <div class="spinner"></div>
+  <div class="loader-text">Загружаем данные из Google Таблицы...</div>
+</div>
+
+<div id="content" style="display:none">
+<div class="container">
+
+  <div class="kpi-row" id="kpiRow"></div>
+
+  <div class="charts-grid">
+    <div class="chart-card full">
+      <div class="chart-title">Выручка и план — 2026</div>
+      <div class="chart-sub">Факт vs план по месяцам · рублей</div>
+      <div style="position:relative;height:220px"><canvas id="c2026"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">% выполнения плана</div>
+      <div class="chart-sub">Динамика 2026</div>
+      <div style="position:relative;height:220px"><canvas id="cPct"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Выручка 2025</div>
+      <div class="chart-sub">Фактическая выручка по месяцам</div>
+      <div style="position:relative;height:220px"><canvas id="c2025"></canvas></div>
+    </div>
+  </div>
+
+  <div class="stores-section">
+    <div style="margin-bottom:1.25rem">
+      <div class="chart-title" id="storesTitle">Выполнение плана по магазинам</div>
+      <div class="chart-sub">Текущий месяц</div>
+    </div>
+    <div class="store-row head">
+      <span>Магазин</span><span>План</span><span>Факт</span><span>%</span><span>Прогресс</span>
+    </div>
+    <div id="storesBody"></div>
+  </div>
+
+  <div class="chart-card full" style="margin-bottom:1.75rem">
+    <div class="chart-title">Ежедневная выручка — текущий месяц</div>
+    <div class="chart-sub">По магазинам · рублей в день</div>
+    <div style="position:relative;height:260px"><canvas id="cDaily"></canvas></div>
+  </div>
+
+  <div class="insights-row" id="insightsRow"></div>
+
+</div>
+<div class="footer" id="footer">Аналитика продаж · Вольтмаркет · Данные обновляются автоматически</div>
+</div>
+
+<script>
+// ============================================================
+// КОНФИГУРАЦИЯ — ID твоей Google таблицы
+// ============================================================
+const SHEET_ID = '19NRvFiXIUJ0BIsfW-ggkSKHaAEbWdlPvlHGLGIFyQGM';
+
+// Названия листов (обновляй каждый месяц)
+const SHEETS = {
+  current: 'Апрель 2026',
+  prev: 'Март 2026',
+  months2026: ['Январь 2026','Февраль 2026','Март 2026','Апрель 2026'],
+  months2025: ['Январь 2025','Февраль 2025','Март 2025','Апрель 2025','Май 2025',
+               'Июнь 2025','Июль 2025','Август 2025','Сентябрь 2025','Октябрь 2025',
+               'Ноябрь 2025','Декабрь 2025']
+};
+
+// Настройки строк/столбцов
+const ROWS = { itogo: 9, storeStart: 4, storeEnd: 7, dailyStart: 13 };
+const COLS = { name: 0, plan: 4, fact: 5, pct: 6 };
+
+Chart.defaults.color = '#6b7280';
+Chart.defaults.font.family = 'Manrope';
+
+// ============================================================
+// Загрузка CSV из Google Sheets
+// ============================================================
+function fetchSheet(sheetName) {
+  const gid = encodeURIComponent(sheetName);
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${gid}`;
+  return new Promise((resolve, reject) => {
+    Papa.parse(url, {
+      download: true,
+      complete: r => resolve(r.data),
+      error: e => reject(e)
+    });
+  });
+}
+
+function parseNum(v) {
+  if (!v) return 0;
+  const n = parseFloat(String(v).replace(/\s/g,'').replace(',','.'));
+  return isNaN(n) ? 0 : n;
+}
+
+function fmt(v) {
+  if (!v) return '—';
+  const m = Math.abs(v)/1000000;
+  if (m >= 1) return (Math.round(m*10)/10) + ' млн ₽';
+  return Math.round(Math.abs(v)/1000) + ' тыс ₽';
+}
+
+function fmtM(v) { return (v/1000000).toFixed(1)+'М'; }
+
+function getPct(v) {
+  const n = parseNum(v);
+  return n < 2 && n > 0 ? Math.round(n*100) : Math.round(n);
+}
+
+function pctColor(p) {
+  if (p >= 100) return '#22c55e';
+  if (p >= 85) return '#f59e0b';
+  if (p >= 70) return '#f59e0b';
+  return '#ef4444';
+}
+
+function badgeClass(p) {
+  if (p >= 85) return 'badge-amber';
+  if (p >= 100) return 'badge-green';
+  return 'badge-red';
+}
+
+// ============================================================
+// Получить итого строку из листа
+// ============================================================
+async function getMonthTotals(sheetName) {
+  try {
+    const data = await fetchSheet(sheetName);
+    const row = data[ROWS.itogo] || [];
+    const plan = parseNum(row[COLS.plan]);
+    const fact = parseNum(row[COLS.fact]);
+    const pct = getPct(row[COLS.pct]);
+    return { plan, fact, pct };
+  } catch { return null; }
+}
+
+// ============================================================
+// Получить данные по магазинам
+// ============================================================
+async function getStores(sheetName) {
+  const data = await fetchSheet(sheetName);
+  const stores = [];
+  for (let i = ROWS.storeStart; i <= ROWS.storeEnd; i++) {
+    const row = data[i] || [];
+    const name = String(row[COLS.name] || '').trim();
+    if (!name || name.includes('РО№') || name.startsWith('(') || name.toLowerCase().includes('итого')) continue;
+    const plan = parseNum(row[COLS.plan]);
+    const fact = parseNum(row[COLS.fact]);
+    if (plan < 100000) continue;
+    const pct = getPct(row[COLS.pct]);
+    stores.push({ name, plan, fact, pct });
+  }
+  return stores;
+}
+
+// ============================================================
+// Получить ежедневные данные
+// ============================================================
+async function getDaily(sheetName) {
+  const data = await fetchSheet(sheetName);
+  const days = [];
+  for (let i = ROWS.dailyStart; i < data.length; i++) {
+    const row = data[i] || [];
+    const d = String(row[0] || '').trim();
+    if (!d || isNaN(parseInt(d))) continue;
+    const dayNum = parseInt(d);
+    if (dayNum < 1 || dayNum > 31) continue;
+    const v1 = parseNum(row[1]);
+    const v2 = parseNum(row[4]);
+    const v3 = parseNum(row[6]);
+    if (v1+v2+v3 > 0) days.push({ day: dayNum, s1: v1, s2: v2, s3: v3 });
+  }
+  return days;
+}
+
+// ============================================================
+// Рендер KPI карточек
+// ============================================================
+function renderKPI(cur, prev, stores) {
+  const deficit = cur.fact - cur.plan;
+  const daysInMonth = 30;
+  const today = new Date().getDate();
+  const dailyAvg = today > 0 ? cur.fact / today : 0;
+  const needed = today < daysInMonth ? (cur.plan - cur.fact) / (daysInMonth - today) : 0;
+
+  document.getElementById('kpiRow').innerHTML = `
+    <div class="kpi-card blue">
+      <div class="kpi-label">Факт ${SHEETS.current}</div>
+      <div class="kpi-value">${fmtM(cur.fact)} млн</div>
+      <div class="kpi-sub">из ${fmtM(cur.plan)} млн план</div>
+      <span class="kpi-badge ${badgeClass(cur.pct)}">${cur.pct}% плана</span>
+    </div>
+    <div class="kpi-card amber">
+      <div class="kpi-label">${deficit >= 0 ? 'Опережение' : 'Дефицит'}</div>
+      <div class="kpi-value">${fmtM(Math.abs(deficit))} млн</div>
+      <div class="kpi-sub">осталось ${daysInMonth - today} дней</div>
+      <span class="kpi-badge ${deficit >= 0 ? 'badge-green' : 'badge-red'}">${deficit >= 0 ? '+' : '–'}${Math.abs(Math.round(deficit/cur.plan*100))}%</span>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-label">Ср. день (факт)</div>
+      <div class="kpi-value">${Math.round(dailyAvg/1000)} тыс</div>
+      <div class="kpi-sub">за ${today} дней месяца</div>
+      <span class="kpi-badge badge-amber">нужно ${Math.round(needed/1000)} тыс/д</span>
+    </div>
+    <div class="kpi-card purple">
+      <div class="kpi-label">К прошлому месяцу</div>
+      <div class="kpi-value">${prev ? (((cur.fact-prev.fact)/prev.fact)*100).toFixed(1)+'%' : '—'}</div>
+      <div class="kpi-sub">${prev ? fmt(prev.fact) + ' → ' + fmt(cur.fact) : ''}</div>
+      <span class="kpi-badge ${prev && cur.fact > prev.fact ? 'badge-green' : 'badge-red'}">${prev && cur.fact > prev.fact ? '▲ Рост' : '▼ Снижение'}</span>
+    </div>
+  `;
+}
+
+// ============================================================
+// Рендер таблицы магазинов
+// ============================================================
+function renderStores(stores) {
+  document.getElementById('storesTitle').textContent = `Выполнение плана по магазинам — ${SHEETS.current}`;
+  const colors = ['#4f8ef7','#7c5cfc','#22c55e','#f59e0b'];
+  let html = '';
+  stores.forEach((s, i) => {
+    html += `
+      <div class="store-row">
+        <div class="store-name">${s.name}</div>
+        <div class="mono">${Math.round(s.plan/1000)} тыс ₽</div>
+        <div class="mono">${Math.round(s.fact/1000)} тыс ₽</div>
+        <div class="pct-big" style="color:${pctColor(s.pct)}">${s.pct}%</div>
+        <div>
+          <div class="bar-wrap"><div class="bar-fill" style="width:${Math.min(s.pct,100)}%;background:${colors[i%colors.length]}"></div></div>
+          <div style="font-size:11px;color:#6b7280;margin-top:4px">${s.fact < s.plan ? '–'+fmt(s.plan-s.fact)+' до плана' : '✅ план выполнен'}</div>
+        </div>
+      </div>`;
+  });
+  // ИТОГО
+  const totalPlan = stores.reduce((a,s)=>a+s.plan,0);
+  const totalFact = stores.reduce((a,s)=>a+s.fact,0);
+  const totalPct = Math.round(totalFact/totalPlan*100);
+  html += `
+    <div class="store-row" style="background:rgba(79,142,247,0.05);border-radius:10px;padding:1rem;margin-top:4px">
+      <div class="store-name" style="font-size:15px">ИТОГО</div>
+      <div class="mono" style="font-weight:700">${Math.round(totalPlan/1000)} тыс ₽</div>
+      <div class="mono" style="font-weight:700">${Math.round(totalFact/1000)} тыс ₽</div>
+      <div class="pct-big" style="color:${pctColor(totalPct)};font-size:17px">${totalPct}%</div>
+      <div>
+        <div class="bar-wrap" style="height:8px"><div class="bar-fill" style="width:${Math.min(totalPct,100)}%;background:linear-gradient(90deg,#4f8ef7,#7c5cfc)"></div></div>
+        <div style="font-size:11px;color:#6b7280;margin-top:4px">${totalFact < totalPlan ? '–'+fmt(totalPlan-totalFact)+' до плана' : '✅ план выполнен'}</div>
+      </div>
+    </div>`;
+  document.getElementById('storesBody').innerHTML = html;
+}
+
+// ============================================================
+// Графики
+// ============================================================
+let charts = {};
+function destroyChart(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
+
+function drawBar2026(months2026) {
+  destroyChart('c2026');
+  const labels = months2026.map(m => m.label);
+  charts['c2026'] = new Chart(document.getElementById('c2026'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label:'Факт', data: months2026.map(m=>m.fact), backgroundColor:'#4f8ef7', borderRadius:6, borderSkipped:false },
+        { label:'План', data: months2026.map(m=>m.plan), backgroundColor:'rgba(255,255,255,0.07)', borderRadius:6, borderSkipped:false, borderColor:'rgba(255,255,255,0.15)', borderWidth:1 }
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false}, tooltip:{callbacks:{label:c=>c.dataset.label+': '+fmtM(c.raw)+'М ₽'}, backgroundColor:'#1a1d26', borderColor:'rgba(255,255,255,0.1)', borderWidth:1} },
+      scales:{
+        x:{ ticks:{color:'#6b7280',font:{size:11}}, grid:{color:'rgba(255,255,255,0.04)'}, border:{color:'rgba(255,255,255,0.07)'} },
+        y:{ ticks:{callback:fmtM,color:'#6b7280',font:{size:11}}, grid:{color:'rgba(255,255,255,0.04)'}, border:{color:'rgba(255,255,255,0.07)'} }
+      }
+    }
+  });
+}
+
+function drawPct(months2026) {
+  destroyChart('cPct');
+  charts['cPct'] = new Chart(document.getElementById('cPct'), {
+    type: 'line',
+    data: {
+      labels: months2026.map(m=>m.label),
+      datasets: [
+        { label:'% план', data:months2026.map(m=>m.pct), borderColor:'#7c5cfc', backgroundColor:'rgba(124,92,252,0.1)', tension:0.4, fill:true, pointRadius:6, pointBackgroundColor:'#7c5cfc', pointBorderColor:'#0a0b0f', pointBorderWidth:2 },
+        { label:'100%', data:months2026.map(()=>100), borderColor:'rgba(255,255,255,0.15)', borderDash:[6,4], pointRadius:0, borderWidth:1 }
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false}, tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw+'%'}, backgroundColor:'#1a1d26', borderColor:'rgba(255,255,255,0.1)', borderWidth:1} },
+      scales:{
+        x:{ ticks:{color:'#6b7280'}, grid:{color:'rgba(255,255,255,0.04)'}, border:{color:'rgba(255,255,255,0.07)'} },
+        y:{ min:50, max:110, ticks:{callback:v=>v+'%',color:'#6b7280'}, grid:{color:'rgba(255,255,255,0.04)'}, border:{color:'rgba(255,255,255,0.07)'} }
+      }
+    }
+  });
+}
+
+function draw2025(months2025) {
+  destroyChart('c2025');
+  const labels2025 = ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'];
+  const colors = months2025.map((_,i)=> i===11 ? '#22c55e' : '#4f8ef7');
+  charts['c2025'] = new Chart(document.getElementById('c2025'), {
+    type: 'bar',
+    data: {
+      labels: labels2025.slice(0, months2025.length),
+      datasets: [{ label:'Факт 2025', data:months2025.map(m=>m.fact), backgroundColor:colors, borderRadius:5, borderSkipped:false }]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false}, tooltip:{callbacks:{label:c=>fmtM(c.raw)+'М ₽'}, backgroundColor:'#1a1d26', borderColor:'rgba(255,255,255,0.1)', borderWidth:1} },
+      scales:{
+        x:{ ticks:{color:'#6b7280',font:{size:10},maxRotation:0}, grid:{color:'rgba(255,255,255,0.04)'}, border:{color:'rgba(255,255,255,0.07)'} },
+        y:{ ticks:{callback:fmtM,color:'#6b7280',font:{size:11}}, grid:{color:'rgba(255,255,255,0.04)'}, border:{color:'rgba(255,255,255,0.07)'} }
+      }
+    }
+  });
+}
+
+function drawDaily(daily) {
+  destroyChart('cDaily');
+  if (!daily.length) return;
+  charts['cDaily'] = new Chart(document.getElementById('cDaily'), {
+    type: 'bar',
+    data: {
+      labels: daily.map(d=>d.day),
+      datasets: [
+        { label:'№1 Победы', data:daily.map(d=>d.s1), backgroundColor:'#4f8ef7', borderRadius:3 },
+        { label:'№2 Автоматики', data:daily.map(d=>d.s2), backgroundColor:'#7c5cfc', borderRadius:3 },
+        { label:'№3 Орск', data:daily.map(d=>d.s3), backgroundColor:'#22c55e', borderRadius:3 }
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false}, tooltip:{callbacks:{label:c=>c.dataset.label+': '+Math.round(c.raw/1000)+'тыс'}, backgroundColor:'#1a1d26', borderColor:'rgba(255,255,255,0.1)', borderWidth:1} },
+      scales:{
+        x:{ stacked:true, ticks:{color:'#6b7280',font:{size:10}}, grid:{color:'rgba(255,255,255,0.04)'}, border:{color:'rgba(255,255,255,0.07)'}, title:{display:true,text:'День месяца',color:'#6b7280',font:{size:11}} },
+        y:{ stacked:true, ticks:{callback:v=>Math.round(v/1000)+'К',color:'#6b7280',font:{size:11}}, grid:{color:'rgba(255,255,255,0.04)'}, border:{color:'rgba(255,255,255,0.07)'} }
+      }
+    }
+  });
+}
+
+// ============================================================
+// Инсайты
+// ============================================================
+function renderInsights(cur, prev, stores) {
+  const best = stores.reduce((a,b)=>a.pct>b.pct?a:b, stores[0]||{});
+  const worst = stores.reduce((a,b)=>a.pct<b.pct?a:b, stores[0]||{});
+  const growth = prev ? ((cur.fact-prev.fact)/prev.fact*100).toFixed(1) : null;
+  const today = new Date().getDate();
+  const daysLeft = 30 - today;
+  const dailyNeeded = daysLeft > 0 ? Math.round((cur.plan-cur.fact)/daysLeft/1000) : 0;
+
+  document.getElementById('insightsRow').innerHTML = `
+    <div class="insight-card">
+      <div class="insight-icon" style="background:rgba(79,142,247,0.15)">📊</div>
+      <div class="insight-title">Выполнение плана</div>
+      <div class="insight-text">${cur.pct}% от плана на сегодня. ${cur.pct < 80 ? 'Значительное отставание — нужны дополнительные усилия.' : cur.pct < 95 ? 'Умеренное отставание — ситуация под контролем.' : 'Отличный результат!'} До конца месяца ${daysLeft} дней.</div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-icon" style="background:rgba(34,197,94,0.15)">🏆</div>
+      <div class="insight-title">Лидер — ${best.name || '—'}</div>
+      <div class="insight-text">Лучший магазин сети с показателем ${best.pct}% выполнения плана. Факт: ${fmt(best.fact)} из ${fmt(best.plan)} плана.</div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-icon" style="background:rgba(239,68,68,0.15)">⚠️</div>
+      <div class="insight-title">Отстаёт — ${worst.name || '—'}</div>
+      <div class="insight-text">Магазин с наименьшим выполнением: ${worst.pct}%. Факт: ${fmt(worst.fact)} из ${fmt(worst.plan)} плана. Разрыв: ${fmt(worst.plan-worst.fact)}.</div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-icon" style="background:rgba(245,158,11,0.15)">🎯</div>
+      <div class="insight-title">Дневная цель</div>
+      <div class="insight-text">Для выполнения плана нужно зарабатывать ${dailyNeeded} тыс ₽ в день оставшиеся ${daysLeft} дней. Текущий дневной темп: ${Math.round(cur.fact/today/1000)} тыс ₽.</div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-icon" style="background:${growth && parseFloat(growth)>0 ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.15)'}">📈</div>
+      <div class="insight-title">Динамика к прошлому месяцу</div>
+      <div class="insight-text">${growth ? (parseFloat(growth)>0?'▲ Рост':'▼ Снижение')+' на '+Math.abs(growth)+'%. '+SHEETS.prev+': '+fmt(prev.fact)+' → '+SHEETS.current+': '+fmt(cur.fact) : 'Нет данных за прошлый месяц.'}</div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-icon" style="background:rgba(124,92,252,0.15)">💡</div>
+      <div class="insight-title">Прогноз на конец месяца</div>
+      <div class="insight-text">При текущем темпе ${Math.round(cur.fact/today/1000)} тыс ₽/день, к концу месяца факт составит ~${fmt(Math.round(cur.fact/today*30))}. Это ${Math.round(cur.fact/today*30/cur.plan*100)}% от плана.</div>
+    </div>
+  `;
+}
+
+// ============================================================
+// Главная функция загрузки
+// ============================================================
+async function loadAll() {
+  document.getElementById('loader').style.display = 'flex';
+  document.getElementById('content').style.display = 'none';
+
+  try {
+    // Параллельная загрузка всех данных
+    const [curData, prevData, storesData, dailyData, ...monthlyData] = await Promise.all([
+      getMonthTotals(SHEETS.current),
+      getMonthTotals(SHEETS.prev),
+      getStores(SHEETS.current),
+      getDaily(SHEETS.current),
+      ...SHEETS.months2026.map(s => getMonthTotals(s)),
+      ...SHEETS.months2025.map(s => getMonthTotals(s))
+    ]);
+
+    const data2026 = monthlyData.slice(0, SHEETS.months2026.length)
+      .map((d,i) => ({ label: SHEETS.months2026[i].replace(' 2026',''), ...d }))
+      .filter(d => d && d.fact > 0);
+
+    const data2025 = monthlyData.slice(SHEETS.months2026.length)
+      .map((d,i) => ({ label: SHEETS.months2025[i], ...d }))
+      .filter(d => d && d.fact > 0);
+
+    // Рендер
+    renderKPI(curData, prevData, storesData);
+    renderStores(storesData);
+    renderInsights(curData, prevData, storesData);
+    drawBar2026(data2026);
+    drawPct(data2026);
+    draw2025(data2025);
+    drawDaily(dailyData);
+
+    // Время обновления
+    const now = new Date();
+    document.getElementById('updateTime').textContent =
+      `Обновлено ${now.getDate()}.${String(now.getMonth()+1).padStart(2,'0')} в ${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`;
+
+    document.getElementById('loader').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+
+  } catch(e) {
+    document.getElementById('loader').innerHTML = `
+      <div style="text-align:center;color:#ef4444">
+        <div style="font-size:24px;margin-bottom:12px">⚠️</div>
+        <div style="font-size:14px;margin-bottom:8px">Ошибка загрузки данных</div>
+        <div style="font-size:12px;color:#6b7280;margin-bottom:16px">Убедись что таблица открыта для доступа по ссылке</div>
+        <button onclick="loadAll()" style="background:#4f8ef7;color:white;border:none;padding:8px 20px;border-radius:8px;cursor:pointer;font-size:13px">Попробовать снова</button>
+      </div>`;
+    console.error(e);
+  }
+}
+
+// Автообновление каждые 5 минут
+loadAll();
+setInterval(loadAll, 5 * 60 * 1000);
+</script>
+</body>
+</html>
