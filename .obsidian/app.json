@@ -1,0 +1,10 @@
+{
+  "useMarkdownLinks": false,
+  "showUnsupportedFiles": false,
+  "defaultViewMode": "preview",
+  "livePreview": true,
+  "defaultFolderNewNotes": "memory",
+  "attachmentFolderPath": "memory/attachments",
+  "newFileLocation": "folder",
+  "newFileFolderPath": "memory"
+}
